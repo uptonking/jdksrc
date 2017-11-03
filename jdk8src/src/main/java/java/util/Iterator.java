@@ -99,6 +99,8 @@ public interface Iterator<E> {
      * performed in the order of iteration, if that order is specified.
      * Exceptions thrown by the action are relayed to the caller.
      *
+     * 用于遍历Iterator
+     *
      * @implSpec
      * <p>The default implementation behaves as if:
      * <pre>{@code

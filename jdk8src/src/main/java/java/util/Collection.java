@@ -124,7 +124,6 @@ import java.util.stream.StreamSupport;
  * implementations to apply that protocol.
  * <p>
  * 是List、Set、Queue的父接口
- *
  * @see Set
  * @see List
  * @see Map
@@ -202,7 +201,7 @@ public interface Collection<E> extends Iterable<E> {
      * <p>This method acts as bridge between array-based and collection-based
      * APIs.
      *
-     * @return an array containing all of the elements in this collection
+     * @return 返回的是Object[]数组，使用需强转，an array containing all of the elements in this collection
      */
     Object[] toArray();
 
@@ -243,7 +242,7 @@ public interface Collection<E> extends Iterable<E> {
      * @param a   the array into which the elements of this collection are to be
      *            stored, if it is big enough; otherwise, a new array of the same
      *            runtime type is allocated for this purpose.
-     * @return an array containing all of the elements in this collection
+     * @return 返回的是会自动扩容的数组，an array containing all of the elements in this collection
      * @throws ArrayStoreException  if the runtime type of the specified array
      *                              is not a supertype of the runtime type of every element in
      *                              this collection
@@ -374,11 +373,11 @@ public interface Collection<E> extends Iterable<E> {
      *                                       in this collection are incompatible with the specified
      *                                       collection
      *                                       (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException          if this collection contains one or more
-     *                                       null elements and the specified collection does not support
-     *                                       null elements
-     *                                       (<a href="#optional-restrictions">optional</a>),
-     *                                       or if the specified collection is null
+     * @THROWS NULLPOINTEREXCEPTION          IF THIS COLLECTION CONTAINS ONE OR MORE
+     * NULL ELEMENTS AND THE SPECIFIED COLLECTION DOES NOT SUPPORT
+     * NULL ELEMENTS
+     * (<A HREF="#OPTIONAL-RESTRICTIONS">OPTIONAL</A>),
+     * OR IF THE SPECIFIED COLLECTION IS NULL
      * @see #remove(Object)
      * @see #contains(Object)
      */
@@ -388,6 +387,8 @@ public interface Collection<E> extends Iterable<E> {
      * Removes all of the elements of this collection that satisfy the given
      * predicate.  Errors or runtime exceptions thrown during iteration or by
      * the predicate are relayed to the caller.
+     * <p>
+     * 用于移除元素，与过滤不同，返回的是boolean，不能链式调用
      *
      * @param filter a predicate which returns {@code true} for elements to be
      *               removed

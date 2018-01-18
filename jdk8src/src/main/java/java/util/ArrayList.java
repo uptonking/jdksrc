@@ -93,8 +93,9 @@ import java.util.function.UnaryOperator;
  * <p>This class is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
- *
+ * <p>
  * 适合随机访问
+ * 顺序插入时，迭代顺序和插入顺序一致
  *
  * @author Josh Bloch
  * @author Neal Gafter
@@ -107,6 +108,7 @@ import java.util.function.UnaryOperator;
 
 public class ArrayList<E> extends AbstractList<E>
         implements List<E>, RandomAccess, Cloneable, java.io.Serializable {
+
     private static final long serialVersionUID = 8683452581122892189L;
 
     /**

@@ -90,6 +90,17 @@ public interface Iterable<T> {
      * capabilities, is unsized, and does not report any spliterator
      * characteristics. Implementing classes can nearly always provide a
      * better implementation.
+     * <p>
+     * *(下面这个Spliterator是Java8才有的,这个名字代表"可分迭代器"（splitable iterator）。
+     * 和Iterator一样， Spliterator也用于遍历数据源中的元素，但它是为了并行执行而设计的。能力有限,以后再说吧)
+     * <p>
+     * 创建一个被这个Iterable接口描述的元素上Spliterator。
+     * <p>
+     * 默认实现从iterable的Iterator中创建一个早期绑定的spliterator。这个spliterator
+     * 继承iterable的iterator的fail-fast性质。
+     * <p>
+     * 默认实现应该总是被重写。被默认实现返回的spliterator拥有不好分解能力，是不依据指定
+     * 大小定制的，而且不报告任何spliterator的性质。实现类差不多总是能提供更好的实现。
      * @since 1.8
      */
     default Spliterator<T> spliterator() {

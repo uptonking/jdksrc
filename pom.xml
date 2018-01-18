@@ -8,10 +8,10 @@
     <modules>
         <module>jdk7src</module>
         <module>jdk8src</module>
-        <module>jdk9src</module>
+        <!--<module>jdk9src</module>-->
     </modules>
     <name>jdksrc</name>
-    <url>http://maven.apache.org</url>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

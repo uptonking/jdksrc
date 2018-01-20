@@ -65,6 +65,8 @@ public class AtomicInteger extends Number implements java.io.Serializable {
         } catch (Exception ex) { throw new Error(ex); }
     }
 
+
+    //在没有锁的机制下,字段value要借助volatile原语，保证线程间的数据是可见性
     private volatile int value;
 
     /**
@@ -121,6 +123,8 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     }
 
     /**
+     * compareAndSet 利用JNI（Java Native Interface）来完成CPU指令的操作
+     *
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
      *
@@ -157,6 +161,24 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     public final int getAndIncrement() {
         return unsafe.getAndAddInt(this, valueOffset, 1);
     }
+
+    /**
+     * Java 7 的getAndIncrement()是这样实现的
+     *  getAndIncrement 采用了CAS操作，每次从内存中读取数据然后将此数据和 +1 后的结果进行CAS操作，
+     *  如果成功就返回结果，否则重试直到成功为止
+     * Atomically increments by one the current value.
+     *
+     * @return the previous value
+     */
+//    public final int getAndIncrement() {
+//        for (;;) {
+//            int current = get();
+//            int next = current + 1;
+//            if (compareAndSet(current, next))
+//                return current;
+//        }
+//    }
+
 
     /**
      * Atomically decrements by one the current value.

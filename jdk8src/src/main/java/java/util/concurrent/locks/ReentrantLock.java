@@ -105,6 +105,8 @@ import java.util.Collection;
  */
 public class ReentrantLock implements Lock, java.io.Serializable {
     private static final long serialVersionUID = 7373984872572414699L;
+
+    //属性记录了锁定次数
     /** Synchronizer providing all implementation mechanics */
     private final Sync sync;
 

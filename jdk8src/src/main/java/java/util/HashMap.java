@@ -898,6 +898,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * operations.  It does not support the <tt>add</tt> or <tt>addAll</tt>
      * operations.
      *
+     * 返回Key的集合Set
+     *
      * @return a set view of the keys contained in this map
      */
     public Set<K> keySet() {
@@ -958,6 +960,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * <tt>Collection.remove</tt>, <tt>removeAll</tt>,
      * <tt>retainAll</tt> and <tt>clear</tt> operations.  It does not
      * support the <tt>add</tt> or <tt>addAll</tt> operations.
+     *
+     * 返回value的集合Collection
      *
      * @return a view of the values contained in this map
      */

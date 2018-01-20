@@ -1010,6 +1010,9 @@ public class ArrayList<E> extends AbstractList<E>
                     ") > toIndex(" + toIndex + ")");
     }
 
+    /**
+     * SubList可以理解为ArrayList的一个视图，不能转换成ArrayList
+     */
     private class SubList extends AbstractList<E> implements RandomAccess {
         private final AbstractList<E> parent;
         private final int parentOffset;

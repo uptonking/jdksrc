@@ -3726,6 +3726,7 @@ public class Arrays {
     }
 
     /**
+     * 内部私有的ArrayList
      * @serial include
      */
     private static class ArrayList<E> extends AbstractList<E>

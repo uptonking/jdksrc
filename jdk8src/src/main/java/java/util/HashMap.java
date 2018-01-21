@@ -94,6 +94,8 @@ import java.util.function.Function;
  * <p>This class is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
+ * <p>
+ * Java 8比Java 7多了Node和TreeNode两个类，还多了HashMapSpliterator
  *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
@@ -221,6 +223,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     /**
+     * 链表转树的阈值
+     * <p>
      * The bin count threshold for using a tree rather than list for a
      * bin.  Bins are converted to trees when adding an element to a
      * bin with at least this many nodes. The value must be greater
@@ -326,6 +330,26 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
     }
 
+
+    //Java7计算哈希值 普通成员方法
+//    final int hash(Object k) {
+//        int h = hashSeed;
+//
+//        ///如果key是字符串
+//        if (0 != h && k instanceof String) {
+//            return sun.misc.Hashing.stringHash32((String) k);
+//        }
+//
+//        h ^= k.hashCode();
+//
+//        // This function ensures that hashCodes that differ only by
+//        // constant multiples at each bit position have a bounded
+//        // number of collisions (approximately 8 at default load factor).
+//        h ^= (h >>> 20) ^ (h >>> 12);
+//
+//        return h ^ (h >>> 7) ^ (h >>> 4);
+//    }
+
     /**
      * Returns x's Class if it is of the form "class C implements
      * Comparable<C>", else null.
@@ -378,6 +402,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
     /* ---------------- Fields -------------- */
 
     /**
+     * 数组的基本元素是Node
+     * <p>
      * The table, initialized on first use, and resized as
      * necessary. When allocated, length is always a power of two.
      * (We also tolerate length zero in some operations to allow
@@ -546,6 +572,34 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return (e = getNode(hash(key), key)) == null ? null : e.value;
     }
 
+    //Java 7 get()获取entry
+//    public V get(Object key) {
+//        if (key == null)
+//            return getForNullKey();
+//        Entry<K, V> entry = getEntry(key);
+//
+//        return null == entry ? null : entry.getValue();
+//    }
+
+//    计算哈希值，获取entry
+//    final Entry<K, V> getEntry(Object key) {
+//        if (size == 0) {
+//            return null;
+//        }
+//
+//        int hash = (key == null) ? 0 : hash(key);
+//        for (Entry<K, V> e = table[indexFor(hash, table.length)];
+//             e != null;
+//             e = e.next) {
+//            Object k;
+//            hash值相等，且key相等
+//            if (e.hash == hash &&
+//                    ((k = e.key) == key || (key != null && key.equals(k))))
+//                return e;
+//        }
+//        return null;
+//    }
+
     /**
      * Implements Map.get and related methods
      *
@@ -592,6 +646,8 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * Associates the specified value with the specified key in this map.
      * If the map previously contained a mapping for the key, the old
      * value is replaced.
+     * <p>
+     * 先计算哈希值
      *
      * @param key   key with which the specified value is to be associated
      * @param value value to be associated with the specified key
@@ -601,6 +657,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * previously associated <tt>null</tt> with <tt>key</tt>.)
      */
     public V put(K key, V value) {
+
         return putVal(hash(key), key, value, false, true);
     }
 
@@ -619,10 +676,13 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         Node<K, V>[] tab;
         Node<K, V> p;
         int n, i;
+
         if ((tab = table) == null || (n = tab.length) == 0)
             n = (tab = resize()).length;
+
         if ((p = tab[i = (n - 1) & hash]) == null)
             tab[i] = newNode(hash, key, value, null);
+
         else {
             Node<K, V> e;
             K k;
@@ -660,6 +720,48 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return null;
     }
 
+    //Java 7 put()
+//    public V put(K key, V value) {
+//        if (table == EMPTY_TABLE) {
+//            inflateTable(threshold);
+//        }
+//        if (key == null)
+//            return putForNullKey(value);
+//        计算key的哈希值
+//        int hash = hash(key);
+//        计算hash值在桶里的位置
+//        int i = indexFor(hash, table.length);
+
+//        如果该位置有值，则遍历当前hash桶链表中的元素
+//        for (Entry<K, V> e = table[i]; e != null; e = e.next) {
+//            Object k;
+//            如果key相同，则替换value
+//            if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
+//                V oldValue = e.value;
+//                e.value = value;
+//                e.recordAccess(this);
+//                返回旧值
+//                return oldValue;
+//            }
+//        }
+//
+//        modCount++;
+//        如果该位置无值，则在该位置添加KV键值对
+//        addEntry(hash, key, value, i);
+//        return null;
+//    }
+
+//    添加KV键值对时进行扩容，容量倍增
+//    void addEntry(int hash, K key, V value, int bucketIndex) {
+//        if ((size >= threshold) && (null != table[bucketIndex])) {
+//            resize(2 * table.length);
+//            hash = (null != key) ? hash(key) : 0;
+//            bucketIndex = indexFor(hash, table.length);
+//        }
+//        添加新entry
+//        createEntry(hash, key, value, bucketIndex);
+//    }
+
     /**
      * Initializes or doubles table size.  If null, allocates in
      * accord with initial capacity target held in field threshold.
@@ -680,7 +782,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
                 return oldTab;
             } else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY &&
                     oldCap >= DEFAULT_INITIAL_CAPACITY)
-                newThr = oldThr << 1; // double threshold
+                newThr = oldThr << 1; // double threshold，倍增
         } else if (oldThr > 0) // initial capacity was placed in threshold
             newCap = oldThr;
         else {               // zero initial threshold signifies using defaults
@@ -740,7 +842,25 @@ public class HashMap<K, V> extends AbstractMap<K, V>
         return newTab;
     }
 
+    //Java 7 resize()
+//    void resize(int newCapacity) {
+//        Entry[] oldTable = table;
+//        int oldCapacity = oldTable.length;
+//        if (oldCapacity == MAXIMUM_CAPACITY) {
+//            threshold = Integer.MAX_VALUE;
+//            return;
+//        }
+//
+//        Entry[] newTable = new Entry[newCapacity];
+//        transfer()拷贝所有entry到扩容后的数组
+//        transfer(newTable, initHashSeedAsNeeded(newCapacity));
+//        table = newTable;
+//        threshold = (int) Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);
+//    }
+
     /**
+     * 链表转树
+     * <p>
      * Replaces all linked nodes in bin at index for given hash unless
      * table is too small, in which case resizes instead.
      */
@@ -897,7 +1017,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * <tt>removeAll</tt>, <tt>retainAll</tt>, and <tt>clear</tt>
      * operations.  It does not support the <tt>add</tt> or <tt>addAll</tt>
      * operations.
-     *
+     * <p>
      * 返回Key的集合Set
      *
      * @return a set view of the keys contained in this map
@@ -960,7 +1080,7 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * <tt>Collection.remove</tt>, <tt>removeAll</tt>,
      * <tt>retainAll</tt> and <tt>clear</tt> operations.  It does not
      * support the <tt>add</tt> or <tt>addAll</tt> operations.
-     *
+     * <p>
      * 返回value的集合Collection
      *
      * @return a view of the values contained in this map
@@ -1024,11 +1144,16 @@ public class HashMap<K, V> extends AbstractMap<K, V>
      * @return a set view of the mappings contained in this map
      */
     public Set<Map.Entry<K, V>> entrySet() {
+
         Set<Map.Entry<K, V>> es;
         return (es = entrySet) == null ? (entrySet = new EntrySet()) : es;
     }
 
+    /**
+     * 键值对基本操作的工具类
+     */
     final class EntrySet extends AbstractSet<Map.Entry<K, V>> {
+
         public final int size() {
             return size;
         }

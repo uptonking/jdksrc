@@ -123,6 +123,8 @@ public class HashMap<K, V>
     static final Entry<?, ?>[] EMPTY_TABLE = {};
 
     /**
+     * 数组中存放的是键值对
+     * <p>
      * The table, resized as necessary. Length MUST Always be a power of two.
      */
     transient Entry<K, V>[] table = (Entry<K, V>[]) EMPTY_TABLE;
@@ -134,6 +136,7 @@ public class HashMap<K, V>
 
     /**
      * The next size value at which to resize (capacity * load factor).
+     * 当前数组最多元素
      *
      * @serial
      */
@@ -780,6 +783,9 @@ public class HashMap<K, V>
         return result;
     }
 
+    /**
+     * 键值对 类
+     */
     static class Entry<K, V> implements Map.Entry<K, V> {
         final K key;
         V value;

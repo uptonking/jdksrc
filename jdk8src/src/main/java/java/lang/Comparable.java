@@ -88,7 +88,11 @@ import java.util.*;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  * <p>
- * 函数式接口，但未声明，因为使用场景不是单独使用也不是用于lambda表达式
+ * 函数式接口，但未声明@FunctionalInterface，因为使用场景不是单独使用也不是用于lambda表达式
+ * <p>
+ * 只包含1个抽象方法
+ * <p>
+ * 位于java.lang.Comparable
  *
  * @param <T> the type of objects that this object may be compared to
  * @author Josh Bloch

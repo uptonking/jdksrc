@@ -41,11 +41,11 @@ package java.util.concurrent;
  * {@code Void} {@code ForkJoinTask}s. Because {@code null} is the
  * only valid value of type {@code Void}, methods such as join always
  * return {@code null} upon completion.
- *
+ * <p>
  * <p><b>Sample Usages.</b> Here is a sketch of a ForkJoin sort that
  * sorts a given {@code long[]} array:
- *
- *  <pre> {@code
+ * <p>
+ * <pre> {@code
  * class SortTask extends RecursiveAction {
  *   final long[] array; final int lo; final int hi;
  *   SortTask(long[] array, int lo, int hi) {
@@ -62,12 +62,12 @@ package java.util.concurrent;
  *     }
  *   }
  * }}</pre>
- *
+ * <p>
  * You could then sort {@code anArray} by creating {@code new
  * SortTask(anArray, 0, anArray.length-1) } and invoking it in a
  * ForkJoinPool.  As a more concrete simple example, the following
  * task increments each element of an array:
- *  <pre> {@code
+ * <pre> {@code
  * class IncrementTask extends RecursiveAction {
  *   final long[] array; final int lo; final int hi;
  *   IncrementTask(long[] array, int lo, int hi) {
@@ -85,7 +85,7 @@ package java.util.concurrent;
  *     }
  *   }
  * }}</pre>
- *
+ * <p>
  * <p>The following example illustrates some refinements and idioms
  * that may lead to better performance: RecursiveActions need not be
  * fully recursive, so long as they maintain the basic
@@ -97,8 +97,8 @@ package java.util.concurrent;
  * counterbalances potential excess partitioning by directly
  * performing leaf actions on unstolen tasks rather than further
  * subdividing.
- *
- *  <pre> {@code
+ * <p>
+ * <pre> {@code
  * double sumOfSquares(ForkJoinPool pool, double[] array) {
  *   int n = array.length;
  *   Applyer a = new Applyer(array, 0, n, null);
@@ -146,9 +146,11 @@ package java.util.concurrent;
  *     result = sum;
  *   }
  * }}</pre>
+ * <p>
+ * 无返回值
  *
- * @since 1.7
  * @author Doug Lea
+ * @since 1.7
  */
 public abstract class RecursiveAction extends ForkJoinTask<Void> {
     private static final long serialVersionUID = 5232453952276485070L;
@@ -163,12 +165,15 @@ public abstract class RecursiveAction extends ForkJoinTask<Void> {
      *
      * @return {@code null} always
      */
-    public final Void getRawResult() { return null; }
+    public final Void getRawResult() {
+        return null;
+    }
 
     /**
      * Requires null completion value.
      */
-    protected final void setRawResult(Void mustBeNull) { }
+    protected final void setRawResult(Void mustBeNull) {
+    }
 
     /**
      * Implements execution conventions for RecursiveActions.

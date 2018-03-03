@@ -98,6 +98,9 @@ import java.util.Comparators;
  * Java Collections Framework</a>.
  * <p>
  * 函数式接口
+ * 包含多个默认方法
+ * <p>
+ * 位于java.util.Comparator
  *
  * @param <T> the type of objects that may be compared by this comparator
  * @author Josh Bloch

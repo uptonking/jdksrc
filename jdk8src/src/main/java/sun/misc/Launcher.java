@@ -46,17 +46,19 @@ import java.security.Permissions;
 import java.security.Permission;
 import java.security.ProtectionDomain;
 import java.security.CodeSource;
+
 import sun.security.util.SecurityConstants;
 import sun.net.www.ParseUtil;
 
 /**
  * This class is used by the system to launch the main application.
-Launcher */
+ * Launcher
+ */
 public class Launcher {
+
     private static URLStreamHandlerFactory factory = new Factory();
     private static Launcher launcher = new Launcher();
-    private static String bootClassPath =
-        System.getProperty("sun.boot.class.path");
+    private static String bootClassPath = System.getProperty("sun.boot.class.path");
 
     public static Launcher getLauncher() {
         return launcher;
@@ -71,7 +73,7 @@ public class Launcher {
             extcl = ExtClassLoader.getExtClassLoader();
         } catch (IOException e) {
             throw new InternalError(
-                "Could not create extension class loader", e);
+                    "Could not create extension class loader", e);
         }
 
         // Now create the class loader to use to launch the application
@@ -79,7 +81,7 @@ public class Launcher {
             loader = AppClassLoader.getAppClassLoader(extcl);
         } catch (IOException e) {
             throw new InternalError(
-                "Could not create application class loader", e);
+                    "Could not create application class loader", e);
         }
 
         // Also set the context class loader for the primordial thread.
@@ -93,7 +95,7 @@ public class Launcher {
                 sm = new java.lang.SecurityManager();
             } else {
                 try {
-                    sm = (SecurityManager)loader.loadClass(s).newInstance();
+                    sm = (SecurityManager) loader.loadClass(s).newInstance();
                 } catch (IllegalAccessException e) {
                 } catch (InstantiationException e) {
                 } catch (ClassNotFoundException e) {
@@ -104,7 +106,7 @@ public class Launcher {
                 System.setSecurityManager(sm);
             } else {
                 throw new InternalError(
-                    "Could not create SecurityManager: " + s);
+                        "Could not create SecurityManager: " + s);
             }
         }
     }
@@ -129,8 +131,7 @@ public class Launcher {
          * create an ExtClassLoader. The ExtClassLoader is created
          * within a context that limits which files it can read
          */
-        public static ExtClassLoader getExtClassLoader() throws IOException
-        {
+        public static ExtClassLoader getExtClassLoader() throws IOException {
             final File[] dirs = getExtDirs();
 
             try {
@@ -139,15 +140,15 @@ public class Launcher {
                 // ExtClassLoader.getContext().
 
                 return AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<ExtClassLoader>() {
-                        public ExtClassLoader run() throws IOException {
-                            int len = dirs.length;
-                            for (int i = 0; i < len; i++) {
-                                MetaIndex.registerDirectory(dirs[i]);
+                        new PrivilegedExceptionAction<ExtClassLoader>() {
+                            public ExtClassLoader run() throws IOException {
+                                int len = dirs.length;
+                                for (int i = 0; i < len; i++) {
+                                    MetaIndex.registerDirectory(dirs[i]);
+                                }
+                                return new ExtClassLoader(dirs);
                             }
-                            return new ExtClassLoader(dirs);
-                        }
-                    });
+                        });
             } catch (java.security.PrivilegedActionException e) {
                 throw (IOException) e.getException();
             }
@@ -163,7 +164,7 @@ public class Launcher {
         public ExtClassLoader(File[] dirs) throws IOException {
             super(getExtURLs(dirs), null, factory);
             SharedSecrets.getJavaNetAccess().
-                getURLClassPath(this).initLookupCache(this);
+                    getURLClassPath(this).initLookupCache(this);
         }
 
         private static File[] getExtDirs() {
@@ -171,7 +172,7 @@ public class Launcher {
             File[] dirs;
             if (s != null) {
                 StringTokenizer st =
-                    new StringTokenizer(s, File.pathSeparator);
+                        new StringTokenizer(s, File.pathSeparator);
                 int count = st.countTokens();
                 dirs = new File[count];
                 for (int i = 0; i < count; i++) {
@@ -237,24 +238,25 @@ public class Launcher {
         }
 
         private static AccessControlContext getContext(File[] dirs)
-            throws IOException
-        {
+                throws IOException {
             PathPermissions perms =
-                new PathPermissions(dirs);
+                    new PathPermissions(dirs);
 
             ProtectionDomain domain = new ProtectionDomain(
-                new CodeSource(perms.getCodeBase(),
-                    (java.security.cert.Certificate[]) null),
-                perms);
+                    new CodeSource(perms.getCodeBase(),
+                            (java.security.cert.Certificate[]) null),
+                    perms);
 
             AccessControlContext acc =
-                new AccessControlContext(new ProtectionDomain[] { domain });
+                    new AccessControlContext(new ProtectionDomain[]{domain});
 
             return acc;
         }
     }
 
     /**
+     * 应用程序类加载器 默认使用
+     * <p>
      * The class loader used for loading from java.class.path.
      * runs in a restricted security context.
      */
@@ -265,8 +267,7 @@ public class Launcher {
         }
 
         public static ClassLoader getAppClassLoader(final ClassLoader extcl)
-            throws IOException
-        {
+                throws IOException {
             final String s = System.getProperty("java.class.path");
             final File[] path = (s == null) ? new File[0] : getClassPath(s);
 
@@ -278,13 +279,13 @@ public class Launcher {
             // accessClassInPackage.sun.* grants from being honored.
             //
             return AccessController.doPrivileged(
-                new PrivilegedAction<AppClassLoader>() {
-                    public AppClassLoader run() {
-                    URL[] urls =
-                        (s == null) ? new URL[0] : pathToURLs(path);
-                    return new AppClassLoader(urls, extcl);
-                }
-            });
+                    new PrivilegedAction<AppClassLoader>() {
+                        public AppClassLoader run() {
+                            URL[] urls =
+                                    (s == null) ? new URL[0] : pathToURLs(path);
+                            return new AppClassLoader(urls, extcl);
+                        }
+                    });
         }
 
         final URLClassPath ucp;
@@ -302,8 +303,7 @@ public class Launcher {
          * Override loadClass so we can checkPackageAccess.
          */
         public Class<?> loadClass(String name, boolean resolve)
-            throws ClassNotFoundException
-        {
+                throws ClassNotFoundException {
             int i = name.lastIndexOf('.');
             if (i != -1) {
                 SecurityManager sm = System.getSecurityManager();
@@ -334,8 +334,7 @@ public class Launcher {
         /**
          * allow any classes loaded from classpath to exit the VM.
          */
-        protected PermissionCollection getPermissions(CodeSource codesource)
-        {
+        protected PermissionCollection getPermissions(CodeSource codesource) {
             PermissionCollection perms = super.getPermissions(codesource);
             perms.add(new RuntimePermission("exitVM"));
             return perms;
@@ -348,10 +347,10 @@ public class Launcher {
          * @see java.lang.instrument.Instrumentation#appendToSystemClassPathSearch
          */
         private void appendToClassPathForInstrumentation(String path) {
-            assert(Thread.holdsLock(this));
+            assert (Thread.holdsLock(this));
 
             // addURL is a no-op if path already contains the URL
-            super.addURL( getFileURL(new File(path)) );
+            super.addURL(getFileURL(new File(path)));
         }
 
         /**
@@ -362,18 +361,17 @@ public class Launcher {
          */
 
         private static AccessControlContext getContext(File[] cp)
-            throws java.net.MalformedURLException
-        {
+                throws java.net.MalformedURLException {
             PathPermissions perms =
-                new PathPermissions(cp);
+                    new PathPermissions(cp);
 
             ProtectionDomain domain =
-                new ProtectionDomain(new CodeSource(perms.getCodeBase(),
-                    (java.security.cert.Certificate[]) null),
-                perms);
+                    new ProtectionDomain(new CodeSource(perms.getCodeBase(),
+                            (java.security.cert.Certificate[]) null),
+                            perms);
 
             AccessControlContext acc =
-                new AccessControlContext(new ProtectionDomain[] { domain });
+                    new AccessControlContext(new ProtectionDomain[]{domain});
 
             return acc;
         }
@@ -381,29 +379,30 @@ public class Launcher {
 
     private static class BootClassPathHolder {
         static final URLClassPath bcp;
+
         static {
             URL[] urls;
             if (bootClassPath != null) {
                 urls = AccessController.doPrivileged(
-                    new PrivilegedAction<URL[]>() {
-                        public URL[] run() {
-                            File[] classPath = getClassPath(bootClassPath);
-                            int len = classPath.length;
-                            Set<File> seenDirs = new HashSet<File>();
-                            for (int i = 0; i < len; i++) {
-                                File curEntry = classPath[i];
-                                // Negative test used to properly handle
-                                // nonexistent jars on boot class path
-                                if (!curEntry.isDirectory()) {
-                                    curEntry = curEntry.getParentFile();
+                        new PrivilegedAction<URL[]>() {
+                            public URL[] run() {
+                                File[] classPath = getClassPath(bootClassPath);
+                                int len = classPath.length;
+                                Set<File> seenDirs = new HashSet<File>();
+                                for (int i = 0; i < len; i++) {
+                                    File curEntry = classPath[i];
+                                    // Negative test used to properly handle
+                                    // nonexistent jars on boot class path
+                                    if (!curEntry.isDirectory()) {
+                                        curEntry = curEntry.getParentFile();
+                                    }
+                                    if (curEntry != null && seenDirs.add(curEntry)) {
+                                        MetaIndex.registerDirectory(curEntry);
+                                    }
                                 }
-                                if (curEntry != null && seenDirs.add(curEntry)) {
-                                    MetaIndex.registerDirectory(curEntry);
-                                }
+                                return pathToURLs(classPath);
                             }
-                            return pathToURLs(classPath);
                         }
-                    }
                 );
             } else {
                 urls = new URL[0];
@@ -478,7 +477,8 @@ public class Launcher {
     static URL getFileURL(File file) {
         try {
             file = file.getCanonicalFile();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
 
         try {
             return ParseUtil.fileToEncodedURL(file);
@@ -498,10 +498,10 @@ public class Launcher {
             String name = PREFIX + "." + protocol + ".Handler";
             try {
                 Class<?> c = Class.forName(name);
-                return (URLStreamHandler)c.newInstance();
+                return (URLStreamHandler) c.newInstance();
             } catch (ReflectiveOperationException e) {
                 throw new InternalError("could not load " + protocol +
-                                        "system protocol handler", e);
+                        "system protocol handler", e);
             }
         }
     }
@@ -516,15 +516,13 @@ class PathPermissions extends PermissionCollection {
 
     URL codeBase;
 
-    PathPermissions(File path[])
-    {
+    PathPermissions(File path[]) {
         this.path = path;
         this.perms = null;
         this.codeBase = null;
     }
 
-    URL getCodeBase()
-    {
+    URL getCodeBase() {
         return codeBase;
     }
 
@@ -532,8 +530,7 @@ class PathPermissions extends PermissionCollection {
         throw new SecurityException("attempt to add a permission");
     }
 
-    private synchronized void init()
-    {
+    private synchronized void init() {
         if (perms != null)
             return;
 
@@ -544,11 +541,11 @@ class PathPermissions extends PermissionCollection {
 
         // add permission to read any "java.*" property
         perms.add(new java.util.PropertyPermission("java.*",
-            SecurityConstants.PROPERTY_READ_ACTION));
+                SecurityConstants.PROPERTY_READ_ACTION));
 
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             public Void run() {
-                for (int i=0; i < path.length; i++) {
+                for (int i = 0; i < path.length; i++) {
                     File f = path[i];
                     String path;
                     try {
@@ -561,19 +558,19 @@ class PathPermissions extends PermissionCollection {
                     }
                     if (f.isDirectory()) {
                         if (path.endsWith(File.separator)) {
-                            perms.add(new FilePermission(path+"-",
-                                SecurityConstants.FILE_READ_ACTION));
+                            perms.add(new FilePermission(path + "-",
+                                    SecurityConstants.FILE_READ_ACTION));
                         } else {
                             perms.add(new FilePermission(
-                                path + File.separator+"-",
-                                SecurityConstants.FILE_READ_ACTION));
+                                    path + File.separator + "-",
+                                    SecurityConstants.FILE_READ_ACTION));
                         }
                     } else {
                         int endIndex = path.lastIndexOf(File.separatorChar);
                         if (endIndex != -1) {
-                            path = path.substring(0, endIndex+1) + "-";
+                            path = path.substring(0, endIndex + 1) + "-";
                             perms.add(new FilePermission(path,
-                                SecurityConstants.FILE_READ_ACTION));
+                                    SecurityConstants.FILE_READ_ACTION));
                         } else {
                             // XXX?
                         }

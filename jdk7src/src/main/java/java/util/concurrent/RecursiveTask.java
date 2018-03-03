@@ -37,10 +37,10 @@ package java.util.concurrent;
 
 /**
  * A recursive result-bearing {@link ForkJoinTask}.
- *
+ * <p>
  * <p>For a classic example, here is a task computing Fibonacci numbers:
- *
- *  <pre> {@code
+ * <p>
+ * <pre> {@code
  * class Fibonacci extends RecursiveTask<Integer> {
  *   final int n;
  *   Fibonacci(int n) { this.n = n; }
@@ -53,7 +53,7 @@ package java.util.concurrent;
  *     return f2.compute() + f1.join();
  *   }
  * }}</pre>
- *
+ * <p>
  * However, besides being a dumb way to compute Fibonacci functions
  * (there is a simple fast linear algorithm that you'd use in
  * practice), this is likely to perform poorly because the smallest
@@ -61,9 +61,11 @@ package java.util.concurrent;
  * is the case for nearly all fork/join applications, you'd pick some
  * minimum granularity size (for example 10 here) for which you always
  * sequentially solve rather than subdividing.
+ * <p>
+ * 有返回值
  *
- * @since 1.7
  * @author Doug Lea
+ * @since 1.7
  */
 public abstract class RecursiveTask<V> extends ForkJoinTask<V> {
     private static final long serialVersionUID = 5232453952276485270L;
